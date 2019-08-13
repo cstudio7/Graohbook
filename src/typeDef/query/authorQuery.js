@@ -2,7 +2,7 @@ import { GraphQLList, GraphQLInt } from 'graphql';
 import {
   getAllAuthors,
   findAuthorById
-} from './../../resolvers/authorResolver';
+} from '../../resolvers/authorResolver';
 import { AuthorType } from '../types';
 
 export const singleAuthorQuery = {

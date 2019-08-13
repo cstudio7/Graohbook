@@ -1,6 +1,6 @@
 import { GraphQLString, GraphQLNonNull } from 'graphql';
-import { AuthorType } from './../types';
-import { addAuthor } from './../../resolvers/authorResolver';
+import { AuthorType } from '../types';
+import { addAuthor } from '../../resolvers/authorResolver';
 
 export const addAuthorMutation = {
   type: AuthorType,
@@ -10,3 +10,6 @@ export const addAuthorMutation = {
   },
   resolve: (parent, args) => addAuthor(args)
 };
+
+export const editAuthorMutation = {};
+export const deleteAuthorMutation = {};
