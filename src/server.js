@@ -3,16 +3,20 @@ import express from 'express';
 import expressGraphQL from 'express-graphql';
 import bodyParser from 'body-parser';
 import env from 'dotenv';
-import schema from './src/schema';
-import authMiddleWare from './src/middlewares/authMiddleware';
+import cors from 'cors';
+import schema from './schema';
+import authMiddleWare from './middlewares/authMiddleware';
 
 env.config();
 
 const app = express();
 
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 app.use(
   '/graphql',
-  bodyParser.json(),
   authMiddleWare,
   expressGraphQL(req => ({
     schema,
@@ -28,6 +32,6 @@ app.all('*', (req, res) => res.status(404).send({
   message: 'you have entered an incorrect route'
 }));
 
-const PORT = 8001;
+const PORT = process.env.PORT || 8001;
 
 app.listen(PORT, () => console.log(`server listening on ${PORT}`));

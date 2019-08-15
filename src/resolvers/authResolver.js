@@ -3,11 +3,12 @@ import { tokenGenerator, comparePassword } from '../helpers/utils';
 
 const { User } = models;
 
-export const currentUser = async (_, args, { user }) => {
-  if (!user) {
+export const currentUser = async (parent, args, context) => {
+  if (!context.user) {
     throw new Error('You are not authenticated!');
   }
-  const userData = await User.findById(user.id);
+  const { user } = context;
+  const userData = await User.findByPk(user.id);
   return userData;
 };
 
@@ -26,7 +27,7 @@ export const signUpUser = async (args) => {
     password: args.password
   };
   try {
-    const user = await User.findOne({ where: { email, username } });
+    const user = await User.findOne({ where: { email } });
 
     if (user) {
       throw new Error('user with this email exist');
@@ -35,7 +36,8 @@ export const signUpUser = async (args) => {
     const token = tokenGenerator(
       newUser.id, newUser.isAdmin, process.env.TOKEN_EXPIRY_DATE, process.env.SECRET, newUser.email
     );
-    return token;
+    newUser.token = token;
+    return newUser;
   } catch (error) {
     throw new Error(error);
   }
@@ -56,7 +58,8 @@ export const loginUser = async (args) => {
     const token = tokenGenerator(
       user.id, user.isAdmin, process.env.TOKEN_EXPIRY_DATE, process.env.SECRET, user.email
     );
-    return token;
+    user.token = token;
+    return user;
   } catch (error) {
     throw new Error(error);
   }

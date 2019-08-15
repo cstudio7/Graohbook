@@ -4,7 +4,7 @@ import { currentUser } from '../../resolvers/authResolver';
 export const userQuery = {
   type: UserType,
   description: 'Current User',
-  resolve: () => currentUser()
+  resolve: (parent, args, context) => currentUser(parent, args, context)
 };
 
 export default {

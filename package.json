@@ -4,8 +4,16 @@
   "description": "Books and Author relationship with NodeJS, Express API with GraphQL",
   "main": "server.js",
   "scripts": {
+    "build-server": "babel src --out-dir dist",
+    "build": "npm run clean && npm run build-server",
+    "clean": "rm -rf dist && mkdir dist",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "devStart": "nodemon server.js --exec babel-node"
+    "lint": "eslint '**/*js'",
+    "lint:fix": "prettier-eslint --write '**/*js' ",
+    "migration": "npx sequelize-cli db:migrate",
+    "devStart": "nodemon src/server.js --exec babel-node",
+    "start": "node dist/server.js",
+    "heroku-postbuild": "npm run build && npm run migration"
   },
   "repository": {
     "type": "git",
@@ -30,6 +38,7 @@
     "babel-plugin-module-resolver": "^3.2.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "dateformat": "^3.0.3",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
@@ -41,7 +50,6 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "^5.8.6",
     "sequelize-cli": "^5.5.0",
-    "slug": "^1.1.0",
     "uuid": "^3.3.2",
     "validatorjs": "^3.15.1"
   },
@@ -50,6 +58,20 @@
     "nodemon": "^1.19.1",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-import-resolver-babel-module": "^5.1.0",
-    "eslint-plugin-import": "^2.17.3"
+    "eslint-plugin-import": "^2.17.3",
+    "husky": "^3.0.0",
+    "lint-staged": "^9.2.0"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    },
+    "homepage": "https://github.com/andela/king-kong-ah-backend#readme"
   }
 }

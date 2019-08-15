@@ -35,9 +35,12 @@ export const findBookAuthor = async (book) => {
   }
 };
 
-export const addAuthor = async (data) => {
+export const addAuthor = async (parent, args, context) => {
+  if (!context.user) {
+    throw new Error('You are not authenticated');
+  }
   try {
-    const { name } = data;
+    const { name } = args;
     const authorName = name.toLowerCase();
     const [author, created] = await Author.findOrCreate({
       where: { name: authorName },

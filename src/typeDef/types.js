@@ -5,7 +5,8 @@ import {
   GraphQLList,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLID
+  GraphQLID,
+  GraphQLBoolean,
 } from 'graphql';
 import FormatDate from 'dateformat';
 import { findBookAuthor } from '../resolvers/authorResolver';
@@ -60,6 +61,15 @@ export const UserType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLNonNull(GraphQLID) },
     email: { type: GraphQLNonNull(GraphQLString) },
-    username: { type: GraphQLNonNull(GraphQLString) }
+    username: { type: GraphQLNonNull(GraphQLString) },
+    isAdmin: { type: GraphQLNonNull(GraphQLBoolean) }
+  })
+});
+
+export const AuthType = new GraphQLObjectType({
+  name: 'Token',
+  description: 'Token',
+  fields: () => ({
+    token: { type: GraphQLString }
   })
 });

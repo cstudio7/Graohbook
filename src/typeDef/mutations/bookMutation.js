@@ -9,7 +9,7 @@ export const addBookMutation = {
     name: { type: GraphQLNonNull(GraphQLString) },
     authorId: { type: GraphQLNonNull(GraphQLInt) }
   },
-  resolve: (parent, args) => addBook(args)
+  resolve: (parent, args, context) => addBook(parent, args, context)
 };
 
 export const editBookMutation = {};
