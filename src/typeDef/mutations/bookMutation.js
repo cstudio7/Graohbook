@@ -1,6 +1,6 @@
 import { GraphQLString, GraphQLNonNull, GraphQLInt } from 'graphql';
-import { BookType } from './../types';
-import { addBook } from './../../resolvers/bookResolver';
+import { BookType } from '../types';
+import { addBook } from '../../resolvers/bookResolver';
 
 export const addBookMutation = {
   type: BookType,
@@ -11,3 +11,5 @@ export const addBookMutation = {
   },
   resolve: (parent, args) => addBook(args)
 };
+
+export const editBookMutation = {};

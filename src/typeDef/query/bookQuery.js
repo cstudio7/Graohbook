@@ -1,5 +1,5 @@
 import { GraphQLString, GraphQLList, GraphQLInt } from 'graphql';
-import { getAllBooks, findBookById } from './../../resolvers/bookResolver';
+import { getAllBooks, findBookById } from '../../resolvers/bookResolver';
 import { BookType } from '../types';
 
 export const singleBookQuery = {
