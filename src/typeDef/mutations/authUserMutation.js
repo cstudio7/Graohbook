@@ -1,9 +1,9 @@
 import { GraphQLString, GraphQLNonNull, GraphQLBoolean } from 'graphql';
-import { UserType } from '../types';
+import { AuthType } from '../types';
 import { signUpUser, loginUser } from '../../resolvers/authResolver';
 
 export const signUpMutation = {
-  type: UserType,
+  type: AuthType,
   description: 'Sign up user',
   args: {
     email: { type: GraphQLNonNull(GraphQLString) },
@@ -15,7 +15,7 @@ export const signUpMutation = {
 };
 
 export const loginMutation = {
-  type: UserType,
+  type: AuthType,
   description: 'Login user',
   args: {
     email: { type: GraphQLNonNull(GraphQLString) },

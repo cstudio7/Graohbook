@@ -8,7 +8,7 @@ export const addAuthorMutation = {
   args: {
     name: { type: GraphQLNonNull(GraphQLString) }
   },
-  resolve: (parent, args) => addAuthor(args)
+  resolve: (parent, args, context) => addAuthor(parent, args, context)
 };
 
 export const editAuthorMutation = {};
