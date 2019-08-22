@@ -11,6 +11,7 @@ import {
 import FormatDate from 'dateformat';
 import { findBookAuthor } from '../resolvers/authorResolver';
 import { findAuthorsBooks } from '../resolvers/bookResolver';
+import { findCategoryBooks, findBookCategory } from '../resolvers/categoryResolver';
 
 export const BookType = new GraphQLObjectType({
   name: 'Book',
@@ -19,6 +20,8 @@ export const BookType = new GraphQLObjectType({
     id: { type: GraphQLNonNull(GraphQLInt) },
     name: { type: GraphQLNonNull(GraphQLString) },
     authorId: { type: GraphQLNonNull(GraphQLInt) },
+    categoryId: { type: GraphQLNonNull(GraphQLInt) },
+    coverImage: { type: GraphQLString },
     dateCreated: {
       type: GraphQLNonNull(GraphQLString),
       resolve: book => FormatDate(book.createdAt)
@@ -30,6 +33,10 @@ export const BookType = new GraphQLObjectType({
     author: {
       type: AuthorType,
       resolve: book => findBookAuthor(book)
+    },
+    category: {
+      type: CategoryType,
+      resolve: book => findBookCategory(book)
     }
   })
 });
@@ -71,5 +78,26 @@ export const AuthType = new GraphQLObjectType({
   description: 'Token',
   fields: () => ({
     token: { type: GraphQLString }
+  })
+});
+
+export const CategoryType = new GraphQLObjectType({
+  name: 'Category',
+  description: 'List of Book Category',
+  fields: () => ({
+    id: { type: GraphQLNonNull(GraphQLInt) },
+    name: { type: GraphQLNonNull(GraphQLString) },
+    dateCreated: {
+      type: GraphQLNonNull(GraphQLString),
+      resolve: category => FormatDate(category.createdAt)
+    },
+    dateUpdated: {
+      type: GraphQLNonNull(GraphQLString),
+      resolve: category => FormatDate(category.updatedAt)
+    },
+    books: {
+      type: new GraphQLList(BookType),
+      resolve: category => findCategoryBooks(category)
+    }
   })
 });

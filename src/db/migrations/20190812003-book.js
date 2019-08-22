@@ -10,6 +10,19 @@ const book = {
       type: Sequelize.STRING,
       unique: true
     },
+    categoryId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Categories',
+        key: 'id',
+        as: 'categoryId'
+      }
+    },
+    coverImage: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
     authorId: {
       allowNull: false,
       type: Sequelize.INTEGER,

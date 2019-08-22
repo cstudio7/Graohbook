@@ -1,6 +1,6 @@
 import models from '../db/models';
 
-const { Book, Author } = models;
+const { Book, Author, Category } = models;
 
 export const getAllBooks = async () => {
   try {
@@ -40,17 +40,25 @@ export const addBook = async (parent, args, context) => {
     throw new Error('You are not authenticated');
   }
   try {
-    const { name, authorId } = args;
+    const {
+      name, authorId, categoryId, coverImage
+    } = args;
     const author = await Author.findByPk(authorId);
+    const category = await Category.findByPk(categoryId);
     if (!author) {
       throw new Error('Author does not exist');
+    }
+    if (!category) {
+      throw new Error('Category does not exist');
     }
     const bookName = name.toLowerCase();
     const [book, created] = await Book.findOrCreate({
       where: { name: bookName },
       defaults: {
         name: bookName,
-        authorId
+        coverImage,
+        authorId,
+        categoryId
       },
     });
     if (!created) {

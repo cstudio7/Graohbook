@@ -7,7 +7,9 @@ export const addBookMutation = {
   description: 'Add a book',
   args: {
     name: { type: GraphQLNonNull(GraphQLString) },
-    authorId: { type: GraphQLNonNull(GraphQLInt) }
+    coverImage: { type: GraphQLString },
+    authorId: { type: GraphQLNonNull(GraphQLInt) },
+    categoryId: { type: GraphQLNonNull(GraphQLInt) }
   },
   resolve: (parent, args, context) => addBook(parent, args, context)
 };
