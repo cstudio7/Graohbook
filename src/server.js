@@ -6,6 +6,8 @@ import env from 'dotenv';
 import cors from 'cors';
 import schema from './schema';
 import authMiddleWare from './middlewares/authMiddleware';
+import { handleErrorNext } from './helpers/utils';
+
 
 env.config();
 
@@ -18,14 +20,19 @@ app.use(bodyParser.json());
 app.use(
   '/graphql',
   authMiddleWare,
-  expressGraphQL(req => ({
-    schema,
-    context: {
-      user: req.user
-    },
-    graphiql: true
-  }))
+  expressGraphQL(req => (
+    {
+      schema,
+      context: {
+        user: req.user
+      },
+      graphiql: true
+    }))
 );
+
+app.use((err, req, res, next) => {
+  handleErrorNext(err, req, res, next);
+});
 
 app.all('*', (req, res) => res.status(404).send({
   status: 'error',

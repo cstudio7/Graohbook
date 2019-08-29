@@ -1,6 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 import { singleBookQuery, allBooksQuery } from './bookQuery';
 import { singleAuthorQuery, allAuthorsQuery } from './authorQuery';
+import { singleCategoryQuery, allCategoryQuery } from './categoryQuery';
 import { userQuery } from './userQuery';
 
 const RootQueryType = new GraphQLObjectType({
@@ -11,7 +12,9 @@ const RootQueryType = new GraphQLObjectType({
     book: singleBookQuery,
     books: allBooksQuery,
     author: singleAuthorQuery,
-    authors: allAuthorsQuery
+    authors: allAuthorsQuery,
+    category: singleCategoryQuery,
+    categories: allCategoryQuery
   })
 });
 

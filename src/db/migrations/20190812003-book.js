@@ -10,6 +10,20 @@ const book = {
       type: Sequelize.STRING,
       unique: true
     },
+    categoryId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Categories',
+        key: 'id',
+        as: 'categoryId'
+      },
+      onUpdate: 'CASCADE',
+    },
+    coverImage: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
     authorId: {
       allowNull: false,
       type: Sequelize.INTEGER,
@@ -17,6 +31,8 @@ const book = {
         model: 'Authors',
         key: 'id',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     createdAt: {
       allowNull: false,
