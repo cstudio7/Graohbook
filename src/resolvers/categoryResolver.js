@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import models from '../db/models';
+import { checkAuth, checkIsAdmin } from '../helpers/utils';
 
 
 const { Book, Category } = models;
@@ -27,10 +29,8 @@ export const findCategoryById = async (data) => {
 };
 
 export const addCategory = async (parent, args, context) => {
-  if (!context.user) {
-    throw new Error('You are not authenticated');
-  }
   try {
+    checkAuth(context);
     const { name } = args;
     const categoryName = name.toLowerCase();
     const [category, created] = await Category.findOrCreate({
@@ -40,7 +40,7 @@ export const addCategory = async (parent, args, context) => {
       },
     });
     if (!created) {
-      throw new Error('Book exist');
+      throw new Error('Category exist');
     }
     return category.dataValues;
   } catch (error) {
@@ -68,6 +68,48 @@ export const findBookCategory = async (data) => {
         where: { id: categoryId }
       });
       return result;
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
+export const editCategory = async (parent, args, context) => {
+  try {
+    await checkIsAdmin(context);
+    const {
+      id, name
+    } = args;
+    const category = await Category.findByPk(id);
+    if (!category) {
+      throw new Error('Category does not exist');
+    }
+    const [rowCount, updatedCategory] = await Category.update({
+      id,
+      name,
+    },
+    { returning: true, where: { id } });
+    return updatedCategory[0].dataValues;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const deleteCategory = async (parent, args, context) => {
+  try {
+    await checkIsAdmin(context);
+    const {
+      id
+    } = args;
+    const categoryExist = await Category.findByPk(id);
+    if (!categoryExist) {
+      throw new Error('No category with this id found');
+    }
+    const deletedCategory = await Category.destroy({
+      returning: true, where: { id }
+    });
+    if (deletedCategory) {
+      return categoryExist.dataValues;
     }
   } catch (error) {
     return error;

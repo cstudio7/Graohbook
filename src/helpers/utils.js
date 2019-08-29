@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import models from '../db/models';
 /**
  * @param {string} password
  * @return {string} hash
@@ -29,3 +30,42 @@ export const tokenGenerator = (id, isAdmin, tokenExpiryDate = '1h', secret = 'se
  * @return {string} hash
  */
 export const comparePassword = (hashPwd, password) => bcrypt.compareSync(password, hashPwd);
+
+export const checkAuth = (data) => {
+  if (!data.user) {
+    throw new Error('You are not authenticated');
+  }
+  return true;
+};
+
+export const checkIsAdmin = async (data) => {
+  const { User } = models;
+  try {
+    checkAuth(data);
+    const { user } = data;
+    const userData = await User.findByPk(user.id);
+    const { isAdmin } = userData;
+    if (!isAdmin) {
+      throw new Error('Unauthorized Access');
+    }
+    return true;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+
+export const handleErrorNext = (err, req, res, next) => {
+  if (err) {
+    if (
+      err.name === 'UnauthorizedError'
+      || err.inner.name === 'TokenExpiredError'
+    ) {
+      res.status(401).send({
+        status: 'error',
+        message: 'Invalid token or expired token'
+      });
+    }
+  }
+  next(err);
+};

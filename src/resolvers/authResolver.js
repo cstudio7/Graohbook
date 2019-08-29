@@ -1,15 +1,20 @@
 import models from '../db/models';
-import { tokenGenerator, comparePassword } from '../helpers/utils';
+import {
+  tokenGenerator, comparePassword, checkAuth
+} from '../helpers/utils';
+
 
 const { User } = models;
 
 export const currentUser = async (parent, args, context) => {
-  if (!context.user) {
-    throw new Error('You are not authenticated!');
+  checkAuth(context);
+  try {
+    const { user } = context;
+    const userData = await User.findByPk(user.id);
+    return userData;
+  } catch (error) {
+    throw new Error(error);
   }
-  const { user } = context;
-  const userData = await User.findByPk(user.id);
-  return userData;
 };
 
 export const signUpUser = async (args) => {

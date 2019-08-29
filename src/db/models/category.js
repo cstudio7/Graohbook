@@ -8,9 +8,6 @@ const category = (sequelize, DataTypes) => {
         notEmpty: true,
         notNull: {
           msg: 'Category name is required.'
-        },
-        isAlpha: {
-          msg: 'Category can only be a string.'
         }
       }
     }
@@ -19,7 +16,9 @@ const category = (sequelize, DataTypes) => {
   Category.associate = (models) => {
     Category.hasMany(models.Book, {
       foreignKey: 'categoryId',
-      as: 'category'
+      as: 'category',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     });
   };
   return Category;

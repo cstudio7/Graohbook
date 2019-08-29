@@ -17,7 +17,8 @@ const book = {
         model: 'Categories',
         key: 'id',
         as: 'categoryId'
-      }
+      },
+      onUpdate: 'CASCADE',
     },
     coverImage: {
       type: Sequelize.STRING,
@@ -30,6 +31,8 @@ const book = {
         model: 'Authors',
         key: 'id',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     createdAt: {
       allowNull: false,

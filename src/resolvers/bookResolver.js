@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import models from '../db/models';
+import { checkAuth, checkIsAdmin } from '../helpers/utils';
 
 const { Book, Author, Category } = models;
 
@@ -36,10 +38,8 @@ export const findAuthorsBooks = async (author) => {
 };
 
 export const addBook = async (parent, args, context) => {
-  if (!context.user) {
-    throw new Error('You are not authenticated');
-  }
   try {
+    await checkAuth(context);
     const {
       name, authorId, categoryId, coverImage
     } = args;
@@ -65,6 +65,59 @@ export const addBook = async (parent, args, context) => {
       throw new Error('Book exist');
     }
     return book.dataValues;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const editBook = async (parent, args, context) => {
+  try {
+    await checkIsAdmin(context);
+    const {
+      id, name, authorId, categoryId, coverImage
+    } = args;
+    const author = await Author.findByPk(authorId);
+    const category = await Category.findByPk(categoryId);
+    const bookExist = await Book.findByPk(id);
+    if (!author) {
+      throw new Error('Author does not exist');
+    }
+    if (!category) {
+      throw new Error('Category does not exist');
+    }
+    if (!bookExist) {
+      throw new Error('No book with this id found');
+    }
+    const [rowCount, updatedBooks] = await Book.update({
+      id,
+      name,
+      authorId,
+      categoryId,
+      coverImage
+    },
+    { returning: true, where: { id } });
+    return updatedBooks[0].dataValues;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const deleteBook = async (parent, args, context) => {
+  try {
+    await checkIsAdmin(context);
+    const {
+      id
+    } = args;
+    const bookExist = await Book.findByPk(id);
+    if (!bookExist) {
+      throw new Error('No book with this id found');
+    }
+    const deletedBooks = await Book.destroy({
+      returning: true, where: { id }
+    });
+    if (deletedBooks) {
+      return bookExist.dataValues;
+    }
   } catch (error) {
     return error;
   }

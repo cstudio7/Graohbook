@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import models from '../db/models';
+import { checkAuth, checkIsAdmin } from '../helpers/utils';
 
 const { Author } = models;
 
@@ -36,10 +38,8 @@ export const findBookAuthor = async (book) => {
 };
 
 export const addAuthor = async (parent, args, context) => {
-  if (!context.user) {
-    throw new Error('You are not authenticated');
-  }
   try {
+    checkAuth(context);
     const { name } = args;
     const authorName = name.toLowerCase();
     const [author, created] = await Author.findOrCreate({
@@ -52,6 +52,48 @@ export const addAuthor = async (parent, args, context) => {
       throw new Error('author exist');
     }
     return author.dataValues;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const editAuthor = async (parent, args, context) => {
+  try {
+    await checkIsAdmin(context);
+    const {
+      id, name
+    } = args;
+    const author = await Author.findByPk(id);
+    if (!author) {
+      throw new Error('Author does not exist');
+    }
+    const [rowCount, updatedAuthor] = await Author.update({
+      id,
+      name,
+    },
+    { returning: true, where: { id } });
+    return updatedAuthor[0].dataValues;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const deleteAuthor = async (parent, args, context) => {
+  try {
+    await checkIsAdmin(context);
+    const {
+      id
+    } = args;
+    const authorExist = await Author.findByPk(id);
+    if (!authorExist) {
+      throw new Error('No author with this id found');
+    }
+    const deletedCategory = await Author.destroy({
+      returning: true, where: { id }
+    });
+    if (deletedCategory) {
+      return authorExist.dataValues;
+    }
   } catch (error) {
     return error;
   }
