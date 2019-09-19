@@ -1,2 +1,2 @@
 # GraphBook
-Books and Author relationship with NodeJS, Express API with GraphQL
+GraphQL based Application for managing Bookshop and Book stores
